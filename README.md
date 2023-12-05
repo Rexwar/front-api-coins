@@ -1,6 +1,8 @@
 # front-api-coins
-cosas instaladas
+# cosas instaladas
 
-npm install axios
-npm install react-native-paper
-npm install @react-native-picker/picker
+#  npm install axios
+#  npm install react-native-paper
+#  npm install @react-native-picker/picker
+
+#  iniciar proyecto npx expo start
