@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
 const CurrencyConverter = () => {
-  const [amount, setAmount] = useState('');
   const [convertedAmount, setConvertedAmount] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('EUR');
   const [currencies, setCurrencies] = useState({});
+  const [valueData, setValueData] = useState(0);
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -23,14 +22,45 @@ const CurrencyConverter = () => {
     fetchCurrencies();
   }, []);
 
-  const convertCurrency = async () => {
+  const convertCurrency = async (value) => {
+    
     try {
-      const response = await axios.get(`https://api.frankfurter.app/latest?from=USD&to=${selectedCurrency}&amount=${amount}`);
-      setConvertedAmount(response.data.rates[selectedCurrency]);
+      //alert(`value: ${value} `);
+      if (value === "" || Number(value) === 0 || value === undefined) {
+        setConvertedAmount(0);
+        return;
+      }
+      if (selectedCurrency === "USD") {
+        setConvertedAmount(value);
+        return;
+      } else {
+        try {
+          const response = await axios.get(`https://api.frankfurter.app/latest?from=USD&to=${selectedCurrency}&amount=${value}`);
+          setConvertedAmount(response.data.rates[selectedCurrency]);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    convertCurrency(valueData);
+  }, [selectedCurrency, convertedAmount]);
+
+  const valueChange = (e) => {
+    const valueAmount = Number(e.target.value);
+    const country = e.target.country;
+    if (valueAmount === "" || valueAmount === undefined) {
+      convertCurrency(0);
+    }
+    setSelectedCurrency(country);
+    convertCurrency(valueAmount);
+    setValueData(valueAmount);
+  }
 
   return (
     <View style={styles.container}>
@@ -38,23 +68,24 @@ const CurrencyConverter = () => {
       <TextInput
         style={styles.input}
         keyboardType='numeric'
-        value={amount}
-        onChangeText={setAmount}
+        value={valueData.toString()}
+        onChange={(e) => valueChange({ target: { value: e.nativeEvent.text, country: selectedCurrency }})}
         placeholder="Enter USD amount"
       />
       <Picker
         selectedValue={selectedCurrency}
         style={styles.picker}
-        onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
+        onValueChange={(itemValue) => {
+          valueChange({ target: { value: Number(valueData),  country: itemValue } });
+        }}
       >
-        {Object.entries(currencies).map(([code, name]) => (
-          <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
-        ))}
+      {Object.entries(currencies).map(([code, name]) => (
+        <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
+      ))}
       </Picker>
-      <Button mode="contained" onPress={convertCurrency}>
-        Convert
-      </Button>
-      {convertedAmount && <Text>Convaerted Amount: {convertedAmount} {selectedCurrency}</Text>}
+      <Text>Amount:
+      ${convertedAmount ? convertedAmount : 0}
+      </Text>
     </View>
   );
 };

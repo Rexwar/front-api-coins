@@ -1,8 +1,21 @@
-# front-api-coins
-# cosas instaladas
+# Mobile Currency App
 
-#  npm install axios
-#  npm install react-native-paper
-#  npm install @react-native-picker/picker
+## Instructions
 
-#  iniciar proyecto npx expo start
+### Install Dependencies
+```
+npm install
+```
+
+### To Run
+
+#### For android studio
+```
+npm android
+```
+
+#### For android expo go
+```
+npm start
+```
+#### and scan QR
