@@ -3,13 +3,21 @@ import { ImageBackground, View, Text, TextInput, StyleSheet, Alert } from 'react
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
+/**
+ * Componente CurrencyConverter para convertir monedas de USD a otras monedas.
+ */
 const CurrencyConverter = () => {
-  const [convertedAmount, setConvertedAmount] = useState('');
-  const [selectedCurrency, setSelectedCurrency] = useState('EUR');
-  const [currencies, setCurrencies] = useState({});
-  const [valueData, setValueData] = useState('');
-  const [image, setImage] = useState(require('./assets/fondo.jpg'));
+  // Estados del componente
+  const [convertedAmount, setConvertedAmount] = useState(''); // Monto convertido
+  const [selectedCurrency, setSelectedCurrency] = useState('EUR'); // Moneda seleccionada
+  const [currencies, setCurrencies] = useState({}); // Lista de monedas disponibles
+  const [valueData, setValueData] = useState(''); // Monto ingresado por el usuario
+  const [image, setImage] = useState(require('./assets/fondo.jpg')); // Imagen de fondo
 
+  /**
+   * Efecto para cargar las monedas disponibles al montar el componente.
+   * Realiza una solicitud GET a la API de Frankfurter para obtener la lista de monedas.
+   */
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
@@ -22,6 +30,10 @@ const CurrencyConverter = () => {
     fetchCurrencies();
   }, []);
 
+  /**
+   * Convierte el monto ingresado a la moneda seleccionada.
+   * @param {number} value - El monto en USD a convertir.
+   */
   const convertCurrency = async (value) => {
     if (value === '') {
       setConvertedAmount('');
@@ -45,6 +57,9 @@ const CurrencyConverter = () => {
     }
   };
 
+  /**
+   * Efecto para convertir la moneda cuando cambia el monto ingresado o la moneda seleccionada.
+   */
   useEffect(() => {
     if (valueData !== '') {
       convertCurrency(parseFloat(valueData));
@@ -53,7 +68,12 @@ const CurrencyConverter = () => {
     }
   }, [selectedCurrency, valueData]);
 
+  /**
+   * Valida y establece el monto ingresado.
+   * @param {string} text - El texto ingresado en el campo de monto.
+   */
   const handleValueChange = (text) => {
+    // Solo permite números positivos (enteros o decimales)
     if (/^\d*\.?\d*$/.test(text)) {
       setValueData(text);
     }
