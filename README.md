@@ -1,21 +1,33 @@
 # Mobile Currency App
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Rexwar/front-api-coins/master)
 
-## Instructions
 
-### Install Dependencies
-```
+
+Currency converter app based on the API provided by [Frankfurter](https://www.frankfurter.app). 
+Made with React Native and Expo.
+
+
+## Getting started 
+---
+### Dependencies
+- [Node.js](https://nodejs.org/en)
+
+### Install node dependencies
+```bash
 npm install
 ```
 
-### To Run
+### Usage
+
+---
 
 #### For android studio
-```
+```bash
 npm android
 ```
 
 #### For android expo go
-```
+```bash
 npm start
 ```
-#### then scan QR
+Then, scan the resulting QR code.
