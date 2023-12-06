@@ -7,7 +7,7 @@ const CurrencyConverter = () => {
   const [convertedAmount, setConvertedAmount] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('EUR');
   const [currencies, setCurrencies] = useState({});
-  const [valueData, setValueData] = useState(0);
+  const [valueData, setValueData] = useState('');
   const [image, setImage] = useState(require('./assets/fondo.jpg'));
 
   useEffect(() => {
@@ -16,77 +16,71 @@ const CurrencyConverter = () => {
         const response = await axios.get('https://api.frankfurter.app/currencies');
         setCurrencies(response.data);
       } catch (error) {
-        console.error(error);
+        Alert.alert("Error", error.message);
       }
     };
-
     fetchCurrencies();
   }, []);
 
   const convertCurrency = async (value) => {
-    
+    if (value === '') {
+      setConvertedAmount('');
+      return;
+    }
+
+    if (isNaN(value) || value <= 0) {
+      Alert.alert("Error", "Please enter a positive number.");
+      return;
+    }
+
     try {
-      //alert(`value: ${value} `);
-      if (value === "" || Number(value) === 0 || value === undefined) {
-        setConvertedAmount(0);
-        return;
-      }
       if (selectedCurrency === "USD") {
         setConvertedAmount(value);
-        return;
       } else {
-        try {
-          const response = await axios.get(`https://api.frankfurter.app/latest?from=USD&to=${selectedCurrency}&amount=${value}`);
-          setConvertedAmount(response.data.rates[selectedCurrency]);
-        } catch (error) {
-          console.error(error);
-        }
+        const response = await axios.get(`https://api.frankfurter.app/latest?from=USD&to=${selectedCurrency}&amount=${value}`);
+        setConvertedAmount(response.data.rates[selectedCurrency]);
       }
-
     } catch (error) {
-      console.error(error);
+      Alert.alert("Conversion Error", error.message);
     }
   };
 
   useEffect(() => {
-    convertCurrency(valueData);
-  }, [selectedCurrency, convertedAmount]);
-
-  const valueChange = (e) => {
-    const valueAmount = Number(e.target.value);
-    const country = e.target.country;
-    if (valueAmount === "" || valueAmount === undefined) {
-      convertCurrency(0);
+    if (valueData !== '') {
+      convertCurrency(parseFloat(valueData));
+    } else {
+      setConvertedAmount('');
     }
-    setSelectedCurrency(country);
-    convertCurrency(valueAmount);
-    setValueData(valueAmount);
+  }, [selectedCurrency, valueData]);
+
+  const handleValueChange = (text) => {
+    if (/^\d*\.?\d*$/.test(text)) {
+      setValueData(text);
+    }
   }
 
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <Text style={styles.texto} >USD to Currency Converter</Text>
+        <Text style={styles.texto}>USD to Currency Converter</Text>
         <TextInput
           style={styles.input}
           keyboardType='numeric'
-          value={valueData.toString()}
-          onChange={(e) => valueChange({ target: { value: e.nativeEvent.text, country: selectedCurrency }})}
+          value={valueData}
+          onChangeText={handleValueChange}
           placeholder="Enter USD amount"
         />
         <Picker
           selectedValue={selectedCurrency}
           style={styles.picker}
-          onValueChange={(itemValue) => {
-            valueChange({ target: { value: Number(valueData),  country: itemValue } });
-          }}
+          onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
         >
-        {Object.entries(currencies).map(([code, name]) => (
-          <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
-        ))}
+          {Object.entries(currencies).map(([code, name]) => (
+            <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
+          ))}
         </Picker>
-        <Text style={styles.textoResultado} >Amount:
-        ${convertedAmount ? convertedAmount : 0}
+        <Text style={styles.textoResultado}>
+          Amount: ${convertedAmount ? parseFloat(convertedAmount).toFixed(2).replace(/[.,]00$/, '') : ''}
         </Text>
       </ImageBackground>
     </View>
