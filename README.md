@@ -2,6 +2,7 @@
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Rexwar/front-api-coins/master)
 
 
+[![Image from Gyazo](https://i.gyazo.com/338b440869099b8155d38131ae83eae1.gif)](https://gyazo.com/338b440869099b8155d38131ae83eae1)
 
 Currency converter app based on the API provided by [Frankfurter](https://www.frankfurter.app). 
 Made with React Native and Expo.
