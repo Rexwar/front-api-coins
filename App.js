@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { ImageBackground, View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
@@ -8,6 +8,7 @@ const CurrencyConverter = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('EUR');
   const [currencies, setCurrencies] = useState({});
   const [valueData, setValueData] = useState(0);
+  const [image, setImage] = useState(require('./assets/fondo.jpg'));
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -64,28 +65,30 @@ const CurrencyConverter = () => {
 
   return (
     <View style={styles.container}>
-      <Text>USD to Currency Converter</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType='numeric'
-        value={valueData.toString()}
-        onChange={(e) => valueChange({ target: { value: e.nativeEvent.text, country: selectedCurrency }})}
-        placeholder="Enter USD amount"
-      />
-      <Picker
-        selectedValue={selectedCurrency}
-        style={styles.picker}
-        onValueChange={(itemValue) => {
-          valueChange({ target: { value: Number(valueData),  country: itemValue } });
-        }}
-      >
-      {Object.entries(currencies).map(([code, name]) => (
-        <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
-      ))}
-      </Picker>
-      <Text>Amount:
-      ${convertedAmount ? convertedAmount : 0}
-      </Text>
+      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <Text style={styles.texto} >USD to Currency Converter</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType='numeric'
+          value={valueData.toString()}
+          onChange={(e) => valueChange({ target: { value: e.nativeEvent.text, country: selectedCurrency }})}
+          placeholder="Enter USD amount"
+        />
+        <Picker
+          selectedValue={selectedCurrency}
+          style={styles.picker}
+          onValueChange={(itemValue) => {
+            valueChange({ target: { value: Number(valueData),  country: itemValue } });
+          }}
+        >
+        {Object.entries(currencies).map(([code, name]) => (
+          <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
+        ))}
+        </Picker>
+        <Text style={styles.textoResultado} >Amount:
+        ${convertedAmount ? convertedAmount : 0}
+        </Text>
+      </ImageBackground>
     </View>
   );
 };
@@ -99,18 +102,62 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
-    width: '100%',
+    borderColor: 'transparent',
+    backgroundColor: '#dcdcdc',
+    width: '90%',
     padding: 10,
     marginVertical: 10,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
   },
   picker: {
-    width: '100%',
+    width: '90%',
     marginBottom: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: '#ffffd5',
+    marginLeft: 20,
+    marginRight: 20,
   },
   'pickerItem': {
     fontSize: 12,
+    color: '#c9a974',
+    backgroundColor: '#ffffd5',
+  },
+  image: {
+    display: 'flex',
+    marginTop: 20,
+    flex: 1,
+    justifyContent: 'center',
+    resizeMode: 'cover', // Esto asegura que la imagen cubra toda la pantalla
+    width: '100%', // Establecer el ancho al 100% de la pantalla
+    height: '100%',
+  },
+  texto: {
+    color: '#c9a974',
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    opacity: 0.9,
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 }, // posicion de la sombra
+    textShadowRadius: 2, // grosor de la sombra
+    backgroundColor: '#ffffd5',
+    borderRadius: 120,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  textoResultado:{
+    color: '#ffffd5',
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    opacity: 0.9,
+    textShadowColor: 'black', 
+    textShadowOffset: { width: 2, height: 2 }, // posicion de la sombra
+    textShadowRadius: 2, // grosor de la sombra
+    backgroundColor: '#c9a974',
+    marginTop: 20,
+
   },
 });
 
