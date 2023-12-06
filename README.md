@@ -18,4 +18,4 @@ npm android
 ```
 npm start
 ```
-#### and scan QR
+#### then scan QR
