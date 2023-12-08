@@ -3,6 +3,27 @@ import { ImageBackground, View, Text, TextInput, StyleSheet, Alert } from 'react
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
+const currencyToCountry = {
+  AUD: 'AU', BGN: 'BG', BRL: 'BR', CAD: 'CA', CHF: 'CH', CNY: 'CN', CZK: 'CZ', DKK: 'DK',
+  EUR: 'EU', GBP: 'GB', HKD: 'HK', HUF: 'HU', IDR: 'ID', ILS: 'IL', INR: 'IN', ISK: 'IS',
+  JPY: 'JP', KRW: 'KR', MXN: 'MX', MYR: 'MY', NOK: 'NO', NZD: 'NZ', PHP: 'PH', PLN: 'PL',
+  RON: 'RO', SEK: 'SE', SGD: 'SG', THB: 'TH', TRY: 'TR', USD: 'US', ZAR: 'ZA'
+};
+
+/**
+ * Devuelve el emoji de la bandera correspondiente al código de país dado.
+ * @param {string} countryCode - El código de país ISO 3166-1 alfa-2 (dos letras).
+ * @returns {string} El emoji de la bandera correspondiente al código de país dado.
+ */
+const getFlagEmoji = (countryCode) => {
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char =>  127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
+
+
 /**
  * Componente CurrencyConverter para convertir monedas de USD a otras monedas.
  */
@@ -96,7 +117,12 @@ const CurrencyConverter = () => {
           onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
         >
           {Object.entries(currencies).map(([code, name]) => (
-            <Picker.Item style={styles.pickerItem} key={code} label={`${name} (${code})`} value={code} />
+            <Picker.Item 
+            style={styles.pickerItem} 
+            key={code} 
+            label={`${getFlagEmoji(currencyToCountry[code] || 'US')} ${name} (${code})`} 
+            value={code} 
+          />
           ))}
         </Picker>
         <Text style={styles.textoResultado}>
