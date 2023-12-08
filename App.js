@@ -126,7 +126,7 @@ const CurrencyConverter = () => {
           ))}
         </Picker>
         <Text style={styles.textoResultado}>
-          Amount: ${convertedAmount ? parseFloat(convertedAmount).toFixed(2).replace(/[.,]00$/, '') : ''}
+          Amount: ${convertedAmount ? parseFloat(convertedAmount).toFixed(2).replace(/[.,]00$/, '') : ''}{" "}{selectedCurrency}
         </Text>
       </ImageBackground>
     </View>
